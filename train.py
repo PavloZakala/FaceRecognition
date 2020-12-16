@@ -6,6 +6,7 @@ from loss import ContrastiveLoss
 from torch import optim
 from torch.utils.data import DataLoader
 from dataloader import SiameseNetworkDataset, UMD
+
 if __name__ == '__main__':
 
     from torchvision import transforms
@@ -41,11 +42,11 @@ if __name__ == '__main__':
 
             loss_contrastive = criterion(output1, output2, label)
             loss_contrastive.backward()
+            iteration_number += 1
 
             optimizer.step()
             if i % 100 == 0:
                 print("Epoch number {}\n Current loss {}\n".format(epoch, float(loss_contrastive)))
-                iteration_number += 10
                 counter.append(iteration_number)
                 loss_history.append(float(loss_contrastive))
     print(counter, loss_history)
