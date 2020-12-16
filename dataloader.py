@@ -87,7 +87,9 @@ if __name__ == "__main__":
     transforms_list = transforms.Compose([
         transforms.ToTensor(),
         # transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
-        transforms.Resize(IMAGE_SHAPE),
+        transforms.CenterCrop((90, 90))
+        # transforms.Resize(IMAGE_SHAPE),
+
     ])
 
     data = SiameseNetworkDataset(UMD(transforms=transforms_list))
@@ -95,7 +97,7 @@ if __name__ == "__main__":
         img1, img2, diff = data[i]
         print(diff)
 
-        fig = plt.figure(figsize=(20, 10))
+        fig = plt.figure()
         ax_1 = fig.add_subplot(1, 2, 1)
         ax_2 = fig.add_subplot(1, 2, 2)
 

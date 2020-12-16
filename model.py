@@ -1,4 +1,56 @@
 from torch import nn
+import torchvision.models as models
+
+class siameseCNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+        self.CNN = nn.Sequential(nn.Conv2d(3, 64, 10),
+                                 nn.ReLU(inplace=True),
+                                 nn.MaxPool2d(2, 2),
+
+                                 nn.Conv2d(64, 128, 7),
+                                 nn.ReLU(inplace=True),
+                                 nn.MaxPool2d(2, 2),
+
+                                 nn.Conv2d(128, 128, 4),
+                                 nn.ReLU(inplace=True),
+                                 nn.MaxPool2d(2, 2),
+
+                                 nn.Conv2d(128, 256, 4),
+                                 nn.ReLU(inplace=True))
+
+        self.FC = nn.Sequential(nn.Linear(8 * 8 * 256, 128),
+                                nn.Sigmoid(),
+
+                                nn.Linear(128, 1))
+
+    def forward_img(self, x):
+        x = self.CNN(x)
+        x = x.view(x.size()[0], -1)
+        x = self.FC(x)
+
+        return x
+
+    def forward(self, x1, x2):
+        featvect1 = self.forward_img(x1)
+        featvect2 = self.forward_img(x2)
+        return featvect1, featvect2
+
+class siameseResNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+        self.CNN = models.resnet18(num_classes=256)
+
+    def forward_img(self, x):
+        x = self.CNN(x)
+        return x
+
+    def forward(self, x1, x2):
+        featvect1 = self.forward_img(x1)
+        featvect2 = self.forward_img(x2)
+        return featvect1, featvect2
 
 class SiameseNetwork(nn.Module):
     def __init__(self):
